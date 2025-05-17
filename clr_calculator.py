@@ -4,111 +4,133 @@ def main():
     weight = get_weight()
     height = get_height()
     age = get_age()
-    rest_bmr = calculate_bmr(gender, weight, height, age) 
+
+    # BMI Calculation
+    bmi = calculate_bmi(weight, height)
+    display_bmi(bmi)
+
+    # BMR & Calorie Maintenance
+    rest_bmr = calculate_bmr(gender, weight, height, age)
     total_calculation(rest_bmr)
 
 
 def welcome():
-    print("Welcome to your calories python calculator!\nFind out How many calories should you eat daily.\n")
+    print("Welcome to your Calories + BMI Calculator!\nFind out how many calories you need daily and check your BMI.\n")
 
 
-def sex():    
-    sexes = ["male","female","M","F","f","m","Male","Female"]
+def sex():
+    sexes = ["male", "female", "M", "F", "f", "m", "Male", "Female"]
     while True:
         sex = str(input("Do you identify as male or female? "))
         while sex not in sexes:
-            sex = str(input("Please enter either 'male' or 'female' "))
-        else:
-            return sex
-            break
+            sex = str(input("Please enter either 'male' or 'female': "))
+        return sex
+
 
 def get_weight():
     weight_kg = float(input("Enter your weight in kilograms: "))
     while weight_kg <= 0:
         weight_kg = float(input("Invalid input. Please enter your weight in kilograms: "))
-    else:
-        return weight_kg
+    return weight_kg
 
 
 def get_height():
-    height_cm = float(input("Enter your height in Centimeters: "))
+    height_cm = float(input("Enter your height in centimeters: "))
     while height_cm <= 0:
-        height_cm = float(input("Invalid input. Please enter your height in Centimeters: "))
-    else:
-        return height_cm
+        height_cm = float(input("Invalid input. Please enter your height in centimeters: "))
+    return height_cm
 
 
 def get_age():
     age_yrs = int(input("Enter your age in years: "))
     while age_yrs <= 0:
-        age_yrs = int(input("Invalid Input. Please enter your age in years: "))
+        age_yrs = int(input("Invalid input. Please enter your age in years: "))
+    return age_yrs
+
+
+def calculate_bmi(weight_kg, height_cm):
+    height_m = height_cm / 100
+    bmi = weight_kg / (height_m ** 2)
+    return round(bmi, 2)
+
+
+def display_bmi(bmi):
+    print(f"\nYour BMI is: {bmi}")
+    if bmi < 18.5:
+        print("You are classified as: Underweight")
+    elif 18.5 <= bmi < 25:
+        print("You are classified as: Normal weight")
+    elif 25 <= bmi < 30:
+        print("You are classified as: Overweight")
     else:
-        return age_yrs
+        print("You are classified as: Obese")
 
 
 def calculate_bmr(gender, weight, height, age):
-    male = ["male", "M" , "m", "Male"]
+    male = ["male", "M", "m", "Male"]
     female = ["female", "F", "f", "Female"]
-    if gender == female:
-        women = (weight * 10) + (height * 6.25) - (age * 5) - 161
-        return int(women)
+    if gender in female:
+        bmr = (weight * 10) + (height * 6.25) - (age * 5) - 161
     else:
-        men = (weight * 10) + (height * 6.25) - (age * 5) + 5
-        return int(men)
-
+        bmr = (weight * 10) + (height * 6.25) - (age * 5) + 5
+    return int(bmr)
 
 
 def total_calculation(rest_bmr):
-    user_activity_lvl = get_user_activity()    
+    user_activity_lvl = get_user_activity()
 
     maintain = {
-      "sedentary" : get_sedentary(rest_bmr), 
-      "light" : get_light_activity(rest_bmr), 
-      "moderate" : get_moderate_activity(rest_bmr), 
-      "active" : get_very_active(rest_bmr)
-      }
+        "sedentary": get_sedentary(rest_bmr),
+        "light": get_light_activity(rest_bmr),
+        "moderate": get_moderate_activity(rest_bmr),
+        "active": get_very_active(rest_bmr)
+    }
 
+    print("\nCalorie Maintenance Recommendation:")
     if user_activity_lvl == "sedentary":
-        print("You need to eat " + str(maintain["sedentary"]) + " calories a day to maintain your current weight")
-
-    if user_activity_lvl == "light":
-        print("You need to eat " + str(maintain["light"]) + " calories a day to maintain your current weight")
-
-    if user_activity_lvl == "moderate":
-        print("You need to eat " + str(maintain["moderate"]) + " calories a day to maintain your current weight")
-
-    if user_activity_lvl == "active":
-        print("You need to eat " + str(maintain["active"]) + " calories a day to maintain your current weight")
+        print(f"You need to eat {int(maintain['sedentary'])} calories/day to maintain your current weight.")
+    elif user_activity_lvl == "light":
+        print(f"You need to eat {int(maintain['light'])} calories/day to maintain your current weight.")
+    elif user_activity_lvl == "moderate":
+        print(f"You need to eat {int(maintain['moderate'])} calories/day to maintain your current weight.")
+    elif user_activity_lvl == "active":
+        print(f"You need to eat {int(maintain['active'])} calories/day to maintain your current weight.")
 
 
-   
 def get_user_activity():
     activity_lvl = ["sedentary", "light", "moderate", "active"]
+    prompt = """
+What is your activity level?
+
+- Sedentary: little to no exercise
+- Light: light exercise/sports 1–3 days/week
+- Moderate: moderate exercise/sports 3–5 days/week
+- Active: hard exercise daily or twice/day
+
+Please enter: 'sedentary', 'light', 'moderate', or 'active': """
+    
     while True:
-        user_lvl = str(input("\nWhat is your activity level?\n\nSedentary is little to no exercise.\nLightly active is light exercise/sports 1 - 3 days/week.\nModerately active is moderate exercise/sports 3 - 5 days/week.\nVery active is hard exercise every day, or 2 xs/day 6 - 7 days/week.\n\nPlease enter: 'sedentary', 'light', 'moderate',  or 'active' "))
-        
+        user_lvl = str(input(prompt)).lower()
         while user_lvl not in activity_lvl:
-            user_lvl = str(input( "Invalid input. Please enter: 'sedentary', 'light', 'moderate',  or 'active' "))
-        else:
-            return user_lvl
-            break
+            user_lvl = str(input("Invalid input. Please enter: 'sedentary', 'light', 'moderate', or 'active': "))
+        return user_lvl
 
 
 def get_sedentary(rest_bmr):
-    sedentary = rest_bmr * 1.25
-    return sedentary
+    return rest_bmr * 1.25
+
 
 def get_light_activity(rest_bmr):
-    light = rest_bmr * 1.375
-    return light
+    return rest_bmr * 1.375
+
 
 def get_moderate_activity(rest_bmr):
-    moderate = rest_bmr * 1.550
-    return moderate
+    return rest_bmr * 1.550
+
 
 def get_very_active(rest_bmr):
-    active = rest_bmr * 1.725
-    return active
+    return rest_bmr * 1.725
+
 
 if __name__ == '__main__':
     main()
